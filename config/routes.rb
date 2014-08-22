@@ -1,14 +1,12 @@
 Rails.application.routes.draw do
   resources :todos
   
-#setting routes - matching verbs to the corresponding controllers and definitions within them
-  #get "todo" => "todos#index"
-  
-  #post "todos" => "todos#create"
-  
+#setting routes - matching verbs to the corresponding controllers and definitions within them  
   put "mark" => "todos#mark"
   
   put "todos" => "todos#put"
+  
+  delete "todos" => "todos#delete"
   
   root to: "todo#index"
   # The priority is based upon order of creation: first created -> highest priority.

@@ -48,4 +48,10 @@ class TodosController < ApplicationController
     end
   end
   
+  def delete
+    if Todo.destroy_all
+      render :json => @todo
+    end
+  end
+  
 end

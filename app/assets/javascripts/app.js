@@ -561,12 +561,9 @@ app.controller("TodosController",["$scope","$window","Todos","Mark", function ($
 
 // delete all todos from the list
 	$scope.deleteAll = function(){
-		Todos.deleteAll({},function(items){
-			if(items.success) {
-				$scope.items = [];
-			    $scope.mark = false;
-			}
-		})
+		Todos.deleteAll({})
+		$scope.items = [];
+	    $scope.mark = false;
 	}
 
 // deletes all todos marked as done
