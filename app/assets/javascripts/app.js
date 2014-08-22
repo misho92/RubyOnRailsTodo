@@ -132,7 +132,7 @@ app.controller("InfoController",["$scope","$window","Account", function ($scope,
 
 //go back button to todos list
 	$scope.todos = function(){
-		$window.location="../todos";
+		$window.location="../todo";
 	}
 }]);
 
@@ -288,7 +288,7 @@ app.controller("PortalController",["$scope","$window","Portal","Todos", function
 	
 //go back button to todos list
 	$scope.todos = function(){
-		$window.location="../todos";
+		$window.location="../todo";
 	}
 }]);
 

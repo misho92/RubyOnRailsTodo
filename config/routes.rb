@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
+  #get 'portal/portal'
+
   resources :todos
-  
+  root to: "todo#index"
 #setting routes - matching verbs to the corresponding controllers and definitions within them  
   put "mark" => "todos#mark"
   
@@ -8,7 +10,11 @@ Rails.application.routes.draw do
   
   delete "todos" => "todos#delete"
   
-  root to: "todo#index"
+  # urls routing
+  get "todo" => "todo#index"
+  
+  get "portal" => "portal#portal"
+  
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
