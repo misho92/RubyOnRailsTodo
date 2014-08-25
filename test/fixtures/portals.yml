@@ -1,0 +1,27 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  payment: MyString
+  name_on_card: MyString
+  card_number: MyString
+  CVC: MyString
+  valid_until: MyString
+  owner_of_account: MyString
+  BIC: MyString
+  IBAN: MyString
+  bank_account_number: MyString
+  plan: MyString
+  registered: MyString
+
+two:
+  payment: MyString
+  name_on_card: MyString
+  card_number: MyString
+  CVC: MyString
+  valid_until: MyString
+  owner_of_account: MyString
+  BIC: MyString
+  IBAN: MyString
+  bank_account_number: MyString
+  plan: MyString
+  registered: MyString

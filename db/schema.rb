@@ -11,15 +11,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140819091457) do
+ActiveRecord::Schema.define(version: 20140822150705) do
 
-  create_table "todo", force: true do |t|
-    t.string  "todo",    limit: nil
-    t.integer "done"
+  create_table "portals", force: true do |t|
+    t.string  "payment"
+    t.string  "name_on_card"
+    t.string  "card_number"
+    t.string  "CVC"
+    t.string  "valid_until"
+    t.string  "owner_of_account"
+    t.string  "BIC"
+    t.string  "IBAN"
+    t.string  "bank_account_number"
+    t.string  "plan"
+    t.string  "registered"
     t.integer "user_id"
   end
 
-# Could not dump table "user" because of following NoMethodError
-#   undefined method `[]' for nil:NilClass
+  create_table "todos", force: true do |t|
+    t.string  "todo"
+    t.string  "done"
+    t.integer "user_id"
+  end
 
 end

@@ -37,7 +37,8 @@ app.factory("Account", ["$resource", function($resource) {
 	}]);
 
 app.factory("Portal", ["$resource", function($resource) {
-	   return $resource("/myportal", null,{
+	   return $resource("/portals", null,{
+		   "get": {method: "GET", isArray: true},
 		   "saveData": {method: "PUT"},
 		   "changePlan": {method: "PUT"},
 		   "cancelPlan": {method: "PUT"}
@@ -141,23 +142,23 @@ app.controller("PortalController",["$scope","$window","Portal","Todos", function
 	
 //offloading all user specific data
 	Portal.get(function(data){
-		$scope.username = data.paymentData[0]["title"] + " " + data.paymentData[0]["username"];
-		$scope.paymentMethod = data.paymentData[0]["payment"];
+		//$scope.username = data["title"] + " " + data["username"];
+		$scope.paymentMethod = data[0]["payment"];
 		$scope.editedPaymentMethod = $scope.paymentMethod
 		if($scope.paymentMethod == "Credit Card") 
 		  $scope.credit = true;
 		else 
 		  $scope.credit = false;
-		$scope.nameOnCard = data.paymentData[0]["nameOnCard"];
-		$scope.cardNumber = data.paymentData[0]["cardNumber"];
-		$scope.cvc = data.paymentData[0]["cvc"];
-		$scope.validUntil = data.paymentData[0]["validUntil"];
-		$scope.accountOwner = data.paymentData[0]["owner"];
-		$scope.BIC = data.paymentData[0]["BIC"];
-		$scope.IBAN = data.paymentData[0]["IBAN"];
-		$scope.bankNo = data.paymentData[0]["bankAccountNumber"];
-		$scope.plan = data.paymentData[0]["plan"];
-		$scope.start = data.paymentData[0]["registered"];
+		$scope.nameOnCard = data[0]["name_on_card"];
+		$scope.cardNumber = data[0]["card_number"];
+		$scope.cvc = data[0]["CVC"];
+		$scope.validUntil = data[0]["valid_until"];
+		$scope.accountOwner = data[0]["owner_of_account"];
+		$scope.BIC = data[0]["BIC"];
+		$scope.IBAN = data[0]["IBAN"];
+		$scope.bankNo = data[0]["bank_account_number"];
+		$scope.plan = data[0]["plan"];
+		$scope.start = data[0]["registered"];
 		$scope.length = "12 months";
 		if($scope.plan == "S") 
 		  $scope.todosNumber = "10";
@@ -175,7 +176,7 @@ app.controller("PortalController",["$scope","$window","Portal","Todos", function
 	$scope.cancelPlan = function(){
 	    if (confirm("Are you sure? All your todos and subscription details would be deleted") == true) {
 	    	Portal.cancelPlan({payment: null, plan: null},function(result){
-	    		if(result.success){
+	    		if(result){
 	    			$scope.plan = "None";
 	    			$scope.length = "None";
 	    			$scope.start = "None";
@@ -194,8 +195,7 @@ app.controller("PortalController",["$scope","$window","Portal","Todos", function
 					Todos.get(function(items){
 						if(items.length <= 10){
 							Portal.changePlan({plan: "S",date: formattedDate, payment: null},function(result){
-								if(result.success){
-									alert("Plan successfully downgraded to S. The maximum capacity for plan S is 10 todo items only.");
+								if(result){
 									$scope.plan = "S";
 									$scope.todosNumber = "10";
 								} else {
@@ -212,8 +212,7 @@ app.controller("PortalController",["$scope","$window","Portal","Todos", function
 		else{
 			if (confirm("Are you sure you want to change your plan to L?") == true) {
 				Portal.changePlan({plan: "L",date: null,payment: null},function(result){
-					if(result.success){
-						   alert("Plan successfully upgraded to L. You can have unlimited number of items.");
+					if(result){
 						   $scope.plan = "L";
 						   $scope.todosNumber = "Unlimited";
 					   } else {
@@ -251,7 +250,7 @@ app.controller("PortalController",["$scope","$window","Portal","Todos", function
            	alert("Card not valid. Selected time in the past");
         }
         else{
-	    	Portal.saveData({payment: paymentMethod,
+	    	Portal.saveData({},{payment: paymentMethod,
 	    					 nameOnCard: nameOnCard,
 	    					 cardNumber: cardNumber,
 	    					 cvc: cvc,
@@ -259,30 +258,24 @@ app.controller("PortalController",["$scope","$window","Portal","Todos", function
 	    					 owner: owner,
 	    					 BIC: BIC,
 	    					 IBAN: IBAN,
-	    					 bankAccountNumber: bankAccountNumber},function(data){
-	    						 if(data.success){
-	    							 Portal.get(function(data){
-	    									$scope.paymentMethod = data.paymentData[0]["payment"];
-	    									$scope.editedPaymentMethod = $scope.paymentMethod
-	    									if($scope.paymentMethod == "Credit Card") 
-	    									  $scope.credit = true;
-	    									else 
-	    									  $scope.credit = false;
-	    									$scope.nameOnCard = data.paymentData[0]["nameOnCard"];
-	    									$scope.cardNumber = data.paymentData[0]["cardNumber"];
-	    									$scope.cvc = data.paymentData[0]["cvc"];
-	    									$scope.validUntil = data.paymentData[0]["validUntil"];
-	    									$scope.accountOwner = data.paymentData[0]["owner"];
-	    									$scope.BIC = data.paymentData[0]["BIC"];
-	    									$scope.IBAN = data.paymentData[0]["IBAN"];
-	    									$scope.bankNo = data.paymentData[0]["bankAccountNumber"];
-	    									$scope.editData = false;
-	    								})
-	    						 }
-	    						 else{
-	    							 alert("Error in displaying data")
-	    						 }
-	    					 })
+	    					 bankAccountNumber: bankAccountNumber},
+	    					 Portal.get(function(data){
+	    						 	$scope.paymentMethod = data[0]["payment"];
+	    							$scope.editedPaymentMethod = $scope.paymentMethod
+	    							if($scope.paymentMethod == "Credit Card") 
+	    							  $scope.credit = true;
+	    							else 
+	    							  $scope.credit = false;
+	    							$scope.nameOnCard = data[0]["name_on_card"];
+	    							$scope.cardNumber = data[0]["card_number"];
+	    							$scope.cvc = data[0]["CVC"];
+	    							$scope.validUntil = data[0]["valid_until"];
+	    							$scope.accountOwner = data[0]["owner_of_account"];
+	    							$scope.BIC = data[0]["BIC"];
+	    							$scope.IBAN = data[0]["IBAN"];
+	    							$scope.bankNo = data[0]["bank_account_number"];
+	    							$scope.editData = false;
+								}))
         }
     }
 	

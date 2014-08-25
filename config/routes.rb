@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :portals
+
   #get 'portal/portal'
 
   resources :todos
@@ -13,7 +15,9 @@ Rails.application.routes.draw do
   # urls routing
   get "todo" => "todo#index"
   
-  get "portal" => "portal#portal"
+  get "portal" => "portals#portal"
+  
+  put "portals" => "portals#put"
   
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
