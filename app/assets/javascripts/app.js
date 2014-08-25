@@ -31,7 +31,8 @@ var app = angular.module("todo",["ngRoute","ngResource"])
 
 // app factories which construct resources with some methods in a restful manner
 app.factory("Account", ["$resource", function($resource) {
-	   return $resource("/myaccount", null,{
+	   return $resource("/accounts", null,{
+		   "get": {method: "GET", isArray: true},
 		   "saveData": {method: "PUT"}
 	   });
 	}]);
@@ -83,43 +84,38 @@ app.controller("InfoController",["$scope","$window","Account", function ($scope,
 	
 //get request for displaying user specific information		
 	Account.get(function(items){
-		$scope.first_name = items.users[0]["first_name"];
-		$scope.username = items.users[0]["title"] + " " + items.users[0]["first_name"];
-		$scope.last_name = items.users[0]["last_name"];
-		$scope.company = items.users[0]["company"];
-		if(items.users[0]["plan"] == "") 
+		$scope.first_name = items[0]["first_name"];
+		$scope.username = items[0]["title"] + " " + items[0]["first_name"];
+		$scope.last_name = items[0]["last_name"];
+		$scope.company = items[0]["company"];
+		if(items[0]["plan"] == "") 
 		  $scope.plan = "None";
 		else 
-		  $scope.plan = items.users[0]["plan"];
-		$scope.email = items.users[0]["email"];
-		$scope.title = items.users[0]["title"];
+		  $scope.plan = items[0]["plan"];
+		$scope.email = items[0]["email"];
+		$scope.title = items[0]["title"];
 	})
 
 //save function to save the edited fields of my info section
 	$scope.save = function(firstName,lastName,company,email,title){
-		Account.saveData({firstName: firstName,
+		Account.saveData({},{firstName: firstName,
 						  lastName: lastName,
 						  company: company,
 						  email: email,
-						  title: title},function(items){
-					   if(items.success){
+						  title: title},
 						   Account.get(function(items){
-							   $scope.first_name = items.users[0]["first_name"];
-								$scope.username = items.users[0]["title"] + " " + items.users[0]["first_name"];
-								$scope.last_name = items.users[0]["last_name"];
-								$scope.company = items.users[0]["company"];
-								if(items.users[0]["plan"] == "") 
+							   $scope.first_name = items[0]["first_name"];
+								$scope.username = items[0]["title"] + " " + items[0]["first_name"];
+								$scope.last_name = items[0]["last_name"];
+								$scope.company = items[0]["company"];
+								if(items[0]["plan"] == "") 
 								  $scope.plan = "None";
 								else 
-								  $scope.plan = items.users[0]["plan"];
-								$scope.email = items.users[0]["email"];
-								$scope.title = items.users[0]["title"];
+								  $scope.plan = items[0]["plan"];
+								$scope.email = items[0]["email"];
+								$scope.title = items[0]["title"];
 								$scope.editData = false;
 							})
-					   } else {
-						   alert("Error in saving");
-					   }
-				   }
 		)
 	}
 	

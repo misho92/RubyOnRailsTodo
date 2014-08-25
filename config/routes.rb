@@ -1,23 +1,31 @@
 Rails.application.routes.draw do
+  get 'account/account'
+
+  resources :accounts
+
   resources :portals
 
   #get 'portal/portal'
 
   resources :todos
   root to: "todo#index"
-#setting routes - matching verbs to the corresponding controllers and definitions within them  
+#setting routes - matching verbs to the corresponding controllers and definitions to them  
   put "mark" => "todos#mark"
   
   put "todos" => "todos#put"
   
   delete "todos" => "todos#delete"
   
+  put "portals" => "portals#put"
+  
+  put "accounts" => "accounts#put"
+  
   # urls routing
   get "todo" => "todo#index"
   
   get "portal" => "portals#portal"
   
-  put "portals" => "portals#put"
+  get "account" => "account#account"
   
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

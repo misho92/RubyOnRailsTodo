@@ -1,0 +1,51 @@
+<!-- my account html file which stores user's account information with the possibility of editing the information -->
+<!doctype html>
+<html ng-app="todo">
+	<head>
+	</head>
+	<body>
+		<div class="row" id="div">
+			<form ng-controller="InfoController">
+				<div class="navbar navbar-inverse navbar-fixed-top">
+				    <div class="navbar-inner">
+					    <div class="container-fluid">
+						    <p class="navbar-text pull-right">
+						    	<a href ="../todo"> Home </a>
+							    <a href="../portal"> My portal</a>
+							   	<a id="link" href="../account">Hi, {{username}}</a>
+							   	<a href="../signout" class="btn-small btn-primary" ng-click="signout()"> Sign out</a>
+						    </p>
+					    </div>
+				    </div>
+			    </div>
+			    <h1 id="h1"> My Account </h1>
+				<p> Personal Information </p>
+				<label> Title </label>
+				<input class="span3" ng-hide="editData" readonly ng-model = "title" type="text">
+				<div ng-show="editData" class="popup">
+				    <select class="span3" required="required" ng-model="editedTitle" ng-change="Title(editedTitle)" ng-options="title for title in titles" required="required">
+					    <option class="" value=""></option>
+			        </select>
+		    	</div>
+				<label> First name </label>
+				<input class="span3" ng-hide="editData" readonly ng-model = "first_name" type="text">
+				<input class="span3" ng-show="editData" required type="text" ng-model="editedFirstName" placeholder="Enter first name">
+				<label> Last name </label>
+				<input class="span3" ng-hide="editData" readonly ng-model = "last_name" type="text">
+				<input class="span3" ng-show="editData" required type="text" ng-model="editedLastName" placeholder="Enter last name">
+				<label> Company </label>
+				<input class="span3" ng-hide="editData" readonly ng-model = "company" type="text">
+				<input class="span3" ng-show="editData" required type="text" ng-model="editedCompany" placeholder="Enter company">
+				<label> Email </label>
+				<input class="span3" ng-hide="editData" readonly ng-model = "email" type="text">
+				<input class="span3" ng-show="editData" required type="email" ng-model="editedEmail" placeholder="Enter email">
+				<!-- <label> Current plan </label>
+				<input class="span3" ng-hide="editData" readonly ng-model = "plan" type="text">-->
+				<button class="btn-primary" ng-hide="editData" ng-click="editData = true"> Edit Data</button>
+				<p><button class="btn-primary" ng-show="editData" ng-click="save(editedFirstName,editedLastName,editedCompany,editedEmail,editedTitle)">
+				Save changes</button></p>
+				<button class="btn-primary" ng-click="todos()">Back to todo</button>
+			</form>
+		</div>
+	</body>
+</html>
