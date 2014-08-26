@@ -6,6 +6,7 @@ class CreateAccounts < ActiveRecord::Migration
       t.string :last_name
       t.string :company
       t.string :email
+      t.string :user_id
     end
   end
 end

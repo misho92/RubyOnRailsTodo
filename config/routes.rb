@@ -1,4 +1,10 @@
 Rails.application.routes.draw do
+  resources :users
+
+  get 'register/signup'
+
+  resources :registers
+
   get 'account/account'
 
   resources :accounts
@@ -20,12 +26,18 @@ Rails.application.routes.draw do
   
   put "accounts" => "accounts#put"
   
+  post "registers" => "registers#post"
+  
+  post "account" => "registers#post"
+  
   # urls routing
   get "todo" => "todo#index"
   
   get "portal" => "portals#portal"
   
   get "account" => "account#account"
+  
+  get "signup" => "register#signup"
   
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

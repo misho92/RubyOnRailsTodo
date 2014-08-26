@@ -308,8 +308,7 @@ app.controller("RegistrationController",["$scope","$window","Register", function
    					      ownerOfAccount: $scope.accountOwner,
    					      BIC: $scope.BIC,
    					      IBAN: $scope.IBAN,
-   					      bankAccountNumber: $scope.bankNo},function(items){
-   					    	  if(items.success){
+   					      bankAccountNumber: $scope.bankNo},function(){
    					    		  var fakePSP = ["CreditCard:Paymill","Debit:Paymill"];
    					    		  var bearer = "";
    					    		  if($scope.paymentMethod == "Credit Card")
@@ -346,9 +345,6 @@ app.controller("RegistrationController",["$scope","$window","Register", function
    					    		      function (errorData) {
    					    		    	  alert("Something went wrong!");
    					    		      });
-   					    	  } else {
-   					    		  alert("Email already taken, please choose another one");
-   					    	  }
    					      }
     		)}
 	}                                   
