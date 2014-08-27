@@ -13,15 +13,6 @@
 
 ActiveRecord::Schema.define(version: 20140827094215) do
 
-  create_table "accounts", force: true do |t|
-    t.string "title"
-    t.string "first_name"
-    t.string "last_name"
-    t.string "company"
-    t.string "email"
-    t.string "user_id"
-  end
-
   create_table "members", force: true do |t|
     t.string   "email",                  default: "", null: false
     t.string   "encrypted_password",     default: "", null: false
@@ -60,19 +51,9 @@ ActiveRecord::Schema.define(version: 20140827094215) do
     t.integer "user_id"
   end
 
-  create_table "registers", force: true do |t|
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "todos", force: true do |t|
-    t.string  "todo"
-    t.string  "done"
-    t.integer "user_id"
-  end
-
-  create_table "users", force: true do |t|
-    t.string   "password"
+    t.string   "title"
+    t.string   "done"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

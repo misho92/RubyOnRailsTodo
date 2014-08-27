@@ -32,14 +32,12 @@ var app = angular.module("todo",["ngRoute","ngResource"])
 // app factories which construct resources with some methods in a restful manner
 app.factory("Account", ["$resource", function($resource) {
 	   return $resource("/accounts", null,{
-		   //"get": {method: "GET", isArray: true},
 		   "saveData": {method: "PUT"}
 	   });
 	}]);
 
 app.factory("Portal", ["$resource", function($resource) {
 	   return $resource("/portals", null,{
-		   //"get": {method: "GET", isArray: true},
 		   "saveData": {method: "PUT"},
 		   "changePlan": {method: "PUT"},
 		   "cancelPlan": {method: "PUT"}
@@ -55,7 +53,6 @@ app.factory("Register", ["$resource", function($resource) {
 app.factory("Todos", ["$resource", function($resource) {
 	   return $resource("/todos", null,{
 		   "insert": {method: "POST"},
-		   //"get": {method: "GET", isArray: true},
 		   "deleteSingle": {method: "PUT"},
 		   "edit": {method: "PUT"},
 		   "deleteAllCompletedTodos": {method: "PUT"},
@@ -191,7 +188,8 @@ app.controller("PortalController",["$scope","$window","Portal","Todos", function
 					Todos.get(function(items){
 						if(items.todos.length <= 10){
 							Portal.changePlan({plan: "S",date: formattedDate, payment: null},function(result){
-								if(result){
+								console.log(result.success);
+								if(result.success){
 									$scope.plan = "S";
 									$scope.todosNumber = "10";
 								} else {

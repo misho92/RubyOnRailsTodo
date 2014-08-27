@@ -1,8 +1,10 @@
 class PortalsController < ApplicationController
-  
+  require "date"
   def index
     @portal = Portal.find_by("user_id = " + current_member.id.to_s)
     @member = Member.find_by(id: current_member.id)
+    puts Date.strptime(@portal.registered, "%Y-%m-%d").strftime("%s")
+    puts Date.today.strftime("%s")
       render :json => {
         :portal => @portal,
         :member => @member
@@ -13,9 +15,11 @@ class PortalsController < ApplicationController
     @portal = Portal.find_by(user_id: current_member.id)
     @member = Member.find_by(id: current_member.id)
     if request.params()["plan"] == "S"
-      if Date.parse(@portal.registered) < Date.tomorrow
+      # 604800 is the number of seconds in a week, if the request is valid ( within 7 days of the registration let the downgrade proceed
+      if (Date.today.strftime("%s").to_i - 604800) <= Date.strptime(@portal.registered, "%Y-%m-%d").strftime("%s").to_i
         @portal.update(plan: request.params()["plan"])
         @member.update(plan: request.params()["plan"])
+        flag = true
       end
     elsif request.params()["plan"] == "L"
       if Date.parse(@portal.registered) < Date.tomorrow
@@ -33,7 +37,14 @@ class PortalsController < ApplicationController
       @member.update(plan: "")
     end
     if @portal.save
-      render :json => @portal
+      if flag == true
+        render :json => {
+        :portal => @portal,
+        :success => true
+      }
+      else
+        render :json => @portal  
+      end
     end
   end
   
