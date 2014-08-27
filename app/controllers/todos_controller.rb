@@ -3,6 +3,7 @@ class TodosController < ApplicationController
   require 'rubygems'
   require 'json'
   
+  # rendering json
   def index
     @todos = Todo.where("user_id = " + current_member.id.to_s)
     @member = Member.find_by(id: current_member.id)
@@ -12,6 +13,7 @@ class TodosController < ApplicationController
       }
   end
 
+# inserting a todo
   def create
     @todo = Todo.create(todo: request.POST["todo"], done: "0", user_id: current_member.id)
     if @todo.save
@@ -19,6 +21,7 @@ class TodosController < ApplicationController
     end
   end
   
+  # put request responsible for delete one particular todo, editing or deleting all completed ones
   def put
     if request.params()["edit"] == "deleteOne"
       @todo = Todo.find_by(todo: request.params()["todo"], user_id: current_member.id)
@@ -34,6 +37,7 @@ class TodosController < ApplicationController
     end
   end
   
+  # marking/unmarking single todo or all todos
   def mark
     if request.params()["mark"] == true && request.params()["all"] == false
       @todo = Todo.find_by(todo: request.params()["todo"], user_id: current_member.id)
@@ -52,6 +56,7 @@ class TodosController < ApplicationController
     end
   end
   
+  # delete all todos
   def delete
     if Todo.destroy_all(user_id: current_member.id)
       render :json => @todo

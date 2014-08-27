@@ -1,10 +1,7 @@
 Rails.application.routes.draw do
   devise_for :members
-  resources :users
 
   get 'register/signup'
-
-  resources :registers
 
   get 'account/account'
 
@@ -37,8 +34,6 @@ Rails.application.routes.draw do
   get "portal" => "portals#portal"
   
   get "account" => "account#account"
-  
-  get "signup" => "register#signup"
   
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

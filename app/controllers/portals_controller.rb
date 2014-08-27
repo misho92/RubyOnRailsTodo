@@ -1,16 +1,17 @@
 class PortalsController < ApplicationController
   require "date"
+  
+  # rendering json
   def index
     @portal = Portal.find_by("user_id = " + current_member.id.to_s)
     @member = Member.find_by(id: current_member.id)
-    puts Date.strptime(@portal.registered, "%Y-%m-%d").strftime("%s")
-    puts Date.today.strftime("%s")
       render :json => {
         :portal => @portal,
         :member => @member
       }
   end
   
+  # upgrading, downgrading (only possible within 7 days of registration), cancel plan, or edit payment data
   def put
     @portal = Portal.find_by(user_id: current_member.id)
     @member = Member.find_by(id: current_member.id)
