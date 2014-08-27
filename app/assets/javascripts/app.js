@@ -32,14 +32,14 @@ var app = angular.module("todo",["ngRoute","ngResource"])
 // app factories which construct resources with some methods in a restful manner
 app.factory("Account", ["$resource", function($resource) {
 	   return $resource("/accounts", null,{
-		   "get": {method: "GET", isArray: true},
+		   //"get": {method: "GET", isArray: true},
 		   "saveData": {method: "PUT"}
 	   });
 	}]);
 
 app.factory("Portal", ["$resource", function($resource) {
 	   return $resource("/portals", null,{
-		   "get": {method: "GET", isArray: true},
+		   //"get": {method: "GET", isArray: true},
 		   "saveData": {method: "PUT"},
 		   "changePlan": {method: "PUT"},
 		   "cancelPlan": {method: "PUT"}
@@ -55,7 +55,7 @@ app.factory("Register", ["$resource", function($resource) {
 app.factory("Todos", ["$resource", function($resource) {
 	   return $resource("/todos", null,{
 		   "insert": {method: "POST"},
-		   "get": {method: "GET", isArray: true},
+		   //"get": {method: "GET", isArray: true},
 		   "deleteSingle": {method: "PUT"},
 		   "edit": {method: "PUT"},
 		   "deleteAllCompletedTodos": {method: "PUT"},
@@ -84,16 +84,16 @@ app.controller("InfoController",["$scope","$window","Account", function ($scope,
 	
 //get request for displaying user specific information		
 	Account.get(function(items){
-		$scope.first_name = items[0]["first_name"];
-		$scope.username = items[0]["title"] + " " + items[0]["first_name"];
-		$scope.last_name = items[0]["last_name"];
-		$scope.company = items[0]["company"];
-		if(items[0]["plan"] == "") 
+		$scope.first_name = items["first_name"];
+		$scope.username = items["title"] + " " + items["first_name"];
+		$scope.last_name = items["last_name"];
+		$scope.company = items["company"];
+		if(items["plan"] == "") 
 		  $scope.plan = "None";
 		else 
-		  $scope.plan = items[0]["plan"];
-		$scope.email = items[0]["email"];
-		$scope.title = items[0]["title"];
+		  $scope.plan = items["plan"];
+		$scope.email = items["email"];
+		$scope.title = items["title"];
 	})
 
 //save function to save the edited fields of my info section
@@ -104,16 +104,16 @@ app.controller("InfoController",["$scope","$window","Account", function ($scope,
 						  email: email,
 						  title: title},
 						   Account.get(function(items){
-							   $scope.first_name = items[0]["first_name"];
-								$scope.username = items[0]["title"] + " " + items[0]["first_name"];
-								$scope.last_name = items[0]["last_name"];
-								$scope.company = items[0]["company"];
-								if(items[0]["plan"] == "") 
+							   $scope.first_name = items["first_name"];
+								$scope.username = items["title"] + " " + items["first_name"];
+								$scope.last_name = items["last_name"];
+								$scope.company = items["company"];
+								if(items["plan"] == "") 
 								  $scope.plan = "None";
 								else 
-								  $scope.plan = items[0]["plan"];
-								$scope.email = items[0]["email"];
-								$scope.title = items[0]["title"];
+								  $scope.plan = items["plan"];
+								$scope.email = items["email"];
+								$scope.title = items["title"];
 								$scope.editData = false;
 							})
 		)
@@ -138,23 +138,23 @@ app.controller("PortalController",["$scope","$window","Portal","Todos", function
 	
 //offloading all user specific data
 	Portal.get(function(data){
-		//$scope.username = data["title"] + " " + data["username"];
-		$scope.paymentMethod = data[0]["payment"];
+		$scope.username = data.member["title"] + " " + data.member["first_name"];
+		$scope.paymentMethod = data.portal["payment"];
 		$scope.editedPaymentMethod = $scope.paymentMethod
 		if($scope.paymentMethod == "Credit Card") 
 		  $scope.credit = true;
 		else 
 		  $scope.credit = false;
-		$scope.nameOnCard = data[0]["name_on_card"];
-		$scope.cardNumber = data[0]["card_number"];
-		$scope.cvc = data[0]["CVC"];
-		$scope.validUntil = data[0]["valid_until"];
-		$scope.accountOwner = data[0]["owner_of_account"];
-		$scope.BIC = data[0]["BIC"];
-		$scope.IBAN = data[0]["IBAN"];
-		$scope.bankNo = data[0]["bank_account_number"];
-		$scope.plan = data[0]["plan"];
-		$scope.start = data[0]["registered"];
+		$scope.nameOnCard = data.portal["name_on_card"];
+		$scope.cardNumber = data.portal["card_number"];
+		$scope.cvc = data.portal["CVC"];
+		$scope.validUntil = data.portal["valid_until"];
+		$scope.accountOwner = data.portal["owner_of_account"];
+		$scope.BIC = data.portal["BIC"];
+		$scope.IBAN = data.portal["IBAN"];
+		$scope.bankNo = data.portal["bank_account_number"];
+		$scope.plan = data.portal["plan"];
+		$scope.start = data.portal["registered"];
 		$scope.length = "12 months";
 		if($scope.plan == "S") 
 		  $scope.todosNumber = "10";
@@ -189,7 +189,7 @@ app.controller("PortalController",["$scope","$window","Portal","Todos", function
 			if($scope.plan == "L"){
 				if (confirm("Are you sure you want to change your plan to S?") == true) {
 					Todos.get(function(items){
-						if(items.length <= 10){
+						if(items.todos.length <= 10){
 							Portal.changePlan({plan: "S",date: formattedDate, payment: null},function(result){
 								if(result){
 									$scope.plan = "S";
@@ -256,20 +256,20 @@ app.controller("PortalController",["$scope","$window","Portal","Todos", function
 	    					 IBAN: IBAN,
 	    					 bankAccountNumber: bankAccountNumber},
 	    					 Portal.get(function(data){
-	    						 	$scope.paymentMethod = data[0]["payment"];
+	    						 	$scope.paymentMethod = data.portal["payment"];
 	    							$scope.editedPaymentMethod = $scope.paymentMethod
 	    							if($scope.paymentMethod == "Credit Card") 
 	    							  $scope.credit = true;
 	    							else 
 	    							  $scope.credit = false;
-	    							$scope.nameOnCard = data[0]["name_on_card"];
-	    							$scope.cardNumber = data[0]["card_number"];
-	    							$scope.cvc = data[0]["CVC"];
-	    							$scope.validUntil = data[0]["valid_until"];
-	    							$scope.accountOwner = data[0]["owner_of_account"];
-	    							$scope.BIC = data[0]["BIC"];
-	    							$scope.IBAN = data[0]["IBAN"];
-	    							$scope.bankNo = data[0]["bank_account_number"];
+	    							$scope.nameOnCard = data.portal["name_on_card"];
+	    							$scope.cardNumber = data.portal["card_number"];
+	    							$scope.cvc = data.portal["CVC"];
+	    							$scope.validUntil = data.portal["valid_until"];
+	    							$scope.accountOwner = data.portal["owner_of_account"];
+	    							$scope.BIC = data.portal["BIC"];
+	    							$scope.IBAN = data.portal["IBAN"];
+	    							$scope.bankNo = data.portal["bank_account_number"];
 	    							$scope.editData = false;
 								}))
         }
@@ -401,14 +401,14 @@ app.controller("TodosController",["$scope","$window","Todos","Mark", function ($
 	
 // todos get request loading all user specific data
 	Todos.get(function(items){
-		$scope.items = items;
-		//$scope.username = items.row[2] + " " + items.row[0];
-		//plan = items.row[1];
+		$scope.items = items.todos;
+		$scope.username = items.member.title + " " + items.member.first_name;
+		plan = items.member.plan;
 		angular.forEach($scope.items, function(item) {
 	  		if(item.done == 1) 
 	  		  item.done = true;
 		});
-		if($scope.left()==0 && $scope.items.length!=0) 
+		if($scope.left()==0 && $scope.items.todos.length!=0) 
 		  $scope.mark = true;
 	})
 
@@ -431,7 +431,7 @@ app.controller("TodosController",["$scope","$window","Todos","Mark", function ($
 			else{
 		        Todos.insert({todo: $scope.todoText})
 				Todos.get(function(items){
-					$scope.items = items;
+					$scope.items = items.todos;
 					angular.forEach($scope.items, function(item) {
 						if(item.done == 1) 
 						  item.done = true;
@@ -460,7 +460,7 @@ app.controller("TodosController",["$scope","$window","Todos","Mark", function ($
 	$scope.deleteTodo = function(item,todo){
 		Todos.deleteSingle({},{edit: "deleteOne",todo: todo})
 		Todos.get(function(items){
-				$scope.items = items;
+				$scope.items = items.todos;
 				angular.forEach($scope.items, function(item) {
 			  		if(item.done == 1) 
 			  		  item.done = true;
@@ -472,7 +472,7 @@ app.controller("TodosController",["$scope","$window","Todos","Mark", function ($
 
 // sign out user
 	$scope.signout = function(){  
-		$window.location.href = "/signout";  
+		$window.location.href = "members/sign_out";  
 	};
 	
 //mark all todos as completed
@@ -480,7 +480,7 @@ app.controller("TodosController",["$scope","$window","Todos","Mark", function ($
 		if($scope.items.length != 0){
 			Mark.mark({mark: true, all: true})
 			Todos.get(function(items){
-				$scope.items = items;
+				$scope.items = items.todos;
 				angular.forEach($scope.items, function(item) {
 			  		if(item.done == 1) 
 			  		  item.done = true;
@@ -504,7 +504,7 @@ app.controller("TodosController",["$scope","$window","Todos","Mark", function ($
 							   }
 						   })
 			Todos.get(function(items){
-				$scope.items = items;
+				$scope.items = items.todos;
 				angular.forEach($scope.items, function(item) {
 			  		if(item.done == 1) 
 			  		  item.done = true;
@@ -523,7 +523,7 @@ app.controller("TodosController",["$scope","$window","Todos","Mark", function ($
 		if(done==true){
 	        Mark.mark({},{mark: true, all: false, todo: item.todo})
 			Todos.get(function(items){
-				$scope.items = items;
+				$scope.items = items.todos;
 				angular.forEach($scope.items, function(item) {
 					if(item.done == 1) 
 					  item.done = true;
@@ -535,7 +535,7 @@ app.controller("TodosController",["$scope","$window","Todos","Mark", function ($
 		else {
 	        Mark.mark({},{mark: false, all: false, todo: item.todo})
 			Todos.get(function(items){
-				$scope.items = items;
+				$scope.items = items.todos;
 				angular.forEach($scope.items, function(item) {
 			  		if(item.done == 1) 
 			  		  item.done = true;
@@ -553,9 +553,9 @@ app.controller("TodosController",["$scope","$window","Todos","Mark", function ($
 
 // deletes all todos marked as done
 	 $scope.deleteAllCompleted = function(){
-		 Todos.deleteAllCompletedTodos({},{edit: "deleteAllCompleted", todos: $scope.items})
+		 Todos.deleteAllCompletedTodos({},{edit: "deleteAllCompleted", todos: $scope.items.todos})
 	     Todos.get(function(items){
-	     $scope.items = items;
+	     $scope.items = items.todos;
 	     angular.forEach($scope.items, function(item) {
 	     	if(item.done == 1) 
 	     		item.done = true;
@@ -568,7 +568,7 @@ app.controller("TodosController",["$scope","$window","Todos","Mark", function ($
 		if(newtodo){
 	    Todos.edit({},{todo: todo, newtodo: newtodo,edit: "one"})
 		Todos.get(function(items){
-			$scope.items = items;
+			$scope.items = items.todos;
 			angular.forEach($scope.items, function(item) {
 		  		if(item.done == 1) 
 		  		  item.done = true;
