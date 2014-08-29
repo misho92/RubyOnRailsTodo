@@ -32,12 +32,14 @@ var app = angular.module("todo",["ngRoute","ngResource"])
 // app factories which construct resources with some methods in a restful manner
 app.factory("Account", ["$resource", function($resource) {
 	   return $resource("/accounts", null,{
+		   "get": {method: "GET", isArray: true},
 		   "saveData": {method: "PUT"}
 	   });
 	}]);
 
 app.factory("Portal", ["$resource", function($resource) {
 	   return $resource("/portals", null,{
+		   //"get": {method: "GET", isArray: true},
 		   "saveData": {method: "PUT"},
 		   "changePlan": {method: "PUT"},
 		   "cancelPlan": {method: "PUT"}
@@ -81,36 +83,24 @@ app.controller("InfoController",["$scope","$window","Account", function ($scope,
 	
 //get request for displaying user specific information		
 	Account.get(function(items){
-		$scope.first_name = items["first_name"];
-		$scope.username = items["title"] + " " + items["first_name"];
-		$scope.last_name = items["last_name"];
-		$scope.company = items["company"];
-		if(items["plan"] == "") 
-		  $scope.plan = "None";
+		$scope.user = items[0];
+		$scope.username = items[0]["title"] + " " + items[0]["first_name"];
+		if(items[0]["plan"] == "") 
+		  $scope.user.plan = "None";
 		else 
-		  $scope.plan = items["plan"];
-		$scope.email = items["email"];
-		$scope.title = items["title"];
+		  $scope.user.plan = items[0]["plan"];
 	})
 
 //save function to save the edited fields of my info section
-	$scope.save = function(firstName,lastName,company,email,title){
-		Account.saveData({},{firstName: firstName,
-						  lastName: lastName,
-						  company: company,
-						  email: email,
-						  title: title},
+	$scope.save = function(editedUser){
+		Account.saveData({},{editedUser:editedUser},
 						   Account.get(function(items){
-							   $scope.first_name = items["first_name"];
-								$scope.username = items["title"] + " " + items["first_name"];
-								$scope.last_name = items["last_name"];
-								$scope.company = items["company"];
-								if(items["plan"] == "") 
-								  $scope.plan = "None";
+							   	$scope.user = items[0];
+								$scope.username = items[0]["title"] + " " + items[0]["first_name"];
+								if(items[0]["plan"] == "") 
+								  $scope.user.plan = "None";
 								else 
-								  $scope.plan = items["plan"];
-								$scope.email = items["email"];
-								$scope.title = items["title"];
+								  $scope.user.plan = items[0]["plan"];
 								$scope.editData = false;
 							})
 		)
@@ -118,7 +108,7 @@ app.controller("InfoController",["$scope","$window","Account", function ($scope,
 	
 	$scope.titles = ["Mr","Mrs","Miss"];
 	$scope.Title = function(title) {
-    	$scope.title = title;
+    	$scope.user.title = title;
     }
     $scope.title = {
         payment: ""
@@ -135,32 +125,22 @@ app.controller("PortalController",["$scope","$window","Portal","Todos", function
 	
 //offloading all user specific data
 	Portal.get(function(data){
-		$scope.username = data.member["title"] + " " + data.member["first_name"];
-		$scope.paymentMethod = data.portal["payment"];
+		$scope.username = data.member[0]["title"] + " " + data.member[0]["first_name"];
+		$scope.portal = data.portal[0];
 		$scope.editedPaymentMethod = $scope.paymentMethod
-		if($scope.paymentMethod == "Credit Card") 
+		if($scope.portal.paymentMethod == "Credit Card") 
 		  $scope.credit = true;
 		else 
 		  $scope.credit = false;
-		$scope.nameOnCard = data.portal["name_on_card"];
-		$scope.cardNumber = data.portal["card_number"];
-		$scope.cvc = data.portal["CVC"];
-		$scope.validUntil = data.portal["valid_until"];
-		$scope.accountOwner = data.portal["owner_of_account"];
-		$scope.BIC = data.portal["BIC"];
-		$scope.IBAN = data.portal["IBAN"];
-		$scope.bankNo = data.portal["bank_account_number"];
-		$scope.plan = data.portal["plan"];
-		$scope.start = data.portal["registered"];
 		$scope.length = "12 months";
-		if($scope.plan == "S") 
+		if($scope.portal.plan == "S") 
 		  $scope.todosNumber = "10";
 		else 
 		  $scope.todosNumber = "Unlimited";
-		if($scope.plan == "") {
-			$scope.plan = "None";
+		if($scope.portal.plan == "") {
+			$scope.portal.plan = "None";
 			$scope.length = "None";
-			$scope.start = "None";
+			$scope.portal.registered = "None";
 			$scope.todosNumber = "None";
 		}
 	})
@@ -168,11 +148,11 @@ app.controller("PortalController",["$scope","$window","Portal","Todos", function
 // cancel plan option
 	$scope.cancelPlan = function(){
 	    if (confirm("Are you sure? All your todos and subscription details would be deleted") == true) {
-	    	Portal.cancelPlan({payment: null, plan: null},function(result){
+	    	Portal.cancelPlan({editedPortal: {paymentMethod: ""},payment: null, plan: null},function(result){
 	    		if(result){
-	    			$scope.plan = "None";
+	    			$scope.portal.plan = "None";
 	    			$scope.length = "None";
-	    			$scope.start = "None";
+	    			$scope.portal.registered = "None";
 	    			$scope.todosNumber = "None";
 	    		}
 	    	})
@@ -183,14 +163,13 @@ app.controller("PortalController",["$scope","$window","Portal","Todos", function
 	$scope.changePlan = function(){
 			var date = new Date();
 			formattedDate = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
-			if($scope.plan == "L"){
+			if($scope.portal.plan == "L"){
 				if (confirm("Are you sure you want to change your plan to S?") == true) {
 					Todos.get(function(items){
 						if(items.todos.length <= 10){
 							Portal.changePlan({plan: "S",date: formattedDate, payment: null},function(result){
-								console.log(result.success);
 								if(result.success){
-									$scope.plan = "S";
+									$scope.portal.plan = "S";
 									$scope.todosNumber = "10";
 								} else {
 									alert("7 days from registration have passed, thus you are no longer allowed to downgrade your plan.");
@@ -207,7 +186,7 @@ app.controller("PortalController",["$scope","$window","Portal","Todos", function
 			if (confirm("Are you sure you want to change your plan to L?") == true) {
 				Portal.changePlan({plan: "L",date: null,payment: null},function(result){
 					if(result){
-						   $scope.plan = "L";
+						   $scope.portal.plan = "L";
 						   $scope.todosNumber = "Unlimited";
 					   } else {
 						   alert("Error occurred in upgrading your plan.");
@@ -219,7 +198,7 @@ app.controller("PortalController",["$scope","$window","Portal","Todos", function
 	
 	$scope.payments = ["Credit Card","Direct Debit"];
 	$scope.Payment = function(payment) {
-    	$scope.editedPaymentMethod = payment;
+    	$scope.editedPortal.paymentMethod = payment;
     	if(payment == "Credit Card") 
     	  $scope.credit = true;
     	else 
@@ -233,42 +212,30 @@ app.controller("PortalController",["$scope","$window","Portal","Todos", function
     	$scope.years[i] = new Date().getFullYear() + i;
     }
     $scope.validity = function(month,year){
-    	$scope.month = month;
-    	$scope.year = year;
+    	$scope.editedPortal.month = month;
+    	$scope.editedPortal.year = year;
     }
 
 // save edited data
-    $scope.saveData = function(paymentMethod,nameOnCard,cardNumber,cvc,owner,BIC,IBAN,bankAccountNumber){
+    $scope.saveData = function(editedPortal){
     	//earlier in THIS year
         if($scope.month < (new Date().getMonth() + 1) && $scope.year == new Date().getFullYear()){
            	alert("Card not valid. Selected time in the past");
         }
         else{
-	    	Portal.saveData({},{payment: paymentMethod,
-	    					 nameOnCard: nameOnCard,
-	    					 cardNumber: cardNumber,
-	    					 cvc: cvc,
-	    					 validUntil: $scope.month + "/" + $scope.year,
-	    					 owner: owner,
-	    					 BIC: BIC,
-	    					 IBAN: IBAN,
-	    					 bankAccountNumber: bankAccountNumber},
+	    	Portal.saveData({},{editedPortal:editedPortal},
 	    					 Portal.get(function(data){
-	    						 	$scope.paymentMethod = data.portal["payment"];
+	    						 	$scope.portal = data.portal[0];
 	    							$scope.editedPaymentMethod = $scope.paymentMethod
-	    							if($scope.paymentMethod == "Credit Card") 
+	    							if($scope.portal.paymentMethod == "Credit Card") 
 	    							  $scope.credit = true;
 	    							else 
 	    							  $scope.credit = false;
-	    							$scope.nameOnCard = data.portal["name_on_card"];
-	    							$scope.cardNumber = data.portal["card_number"];
-	    							$scope.cvc = data.portal["CVC"];
-	    							$scope.validUntil = data.portal["valid_until"];
-	    							$scope.accountOwner = data.portal["owner_of_account"];
-	    							$scope.BIC = data.portal["BIC"];
-	    							$scope.IBAN = data.portal["IBAN"];
-	    							$scope.bankNo = data.portal["bank_account_number"];
 	    							$scope.editData = false;
+	    							if($scope.portal.plan == ""){
+		    							$scope.portal.plan = "None";
+		    			    			$scope.portal.registered = "None";
+	    							}
 								}))
         }
     }

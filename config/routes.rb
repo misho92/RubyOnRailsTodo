@@ -12,7 +12,10 @@ Rails.application.routes.draw do
   #get 'portal/portal'
 
   resources :todos
+  
   root to: "todo#index"
+  
+  #devise_for :members, :controllers => { registration: "registration" }
 #setting routes - matching verbs to the corresponding controllers and definitions to them  
   put "mark" => "todos#mark"
   

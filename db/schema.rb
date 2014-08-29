@@ -37,25 +37,24 @@ ActiveRecord::Schema.define(version: 20140827094215) do
   add_index "members", ["reset_password_token"], name: "index_members_on_reset_password_token", unique: true
 
   create_table "portals", force: true do |t|
-    t.string  "payment"
-    t.string  "name_on_card"
-    t.string  "card_number"
+    t.string  "paymentMethod"
+    t.string  "nameOnCard"
+    t.string  "cardNumber"
     t.string  "CVC"
-    t.string  "valid_until"
-    t.string  "owner_of_account"
+    t.string  "validUntil"
+    t.string  "accountOwner"
     t.string  "BIC"
     t.string  "IBAN"
-    t.string  "bank_account_number"
+    t.string  "bankNo"
     t.string  "plan"
     t.string  "registered"
     t.integer "user_id"
   end
 
   create_table "todos", force: true do |t|
-    t.string   "title"
-    t.string   "done"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.string  "todo"
+    t.string  "done"
+    t.integer "user_id"
   end
 
 end
