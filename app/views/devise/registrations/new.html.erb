@@ -28,8 +28,8 @@
   <div><%= select_tag "plan", options_for_select([["S" ,"S"], ["L" ,"L"]]) %><br /></div>
   
   <p> Choose payment method </p>
-  <div><%= select_tag "plan", options_for_select([["Credit Card" ,"Credit Card"], ["Direct Debit" ,"Direct Debit"]]) %><br /></div>
-
+  <div><%= select_tag "paymentMethod", options_for_select([["Credit Card" ,"Credit Card"], ["Direct Debit" ,"Direct Debit"]]) %><br /></div>
+	
   <div><%= f.submit "Sign up" %></div>
 <% end %>
 

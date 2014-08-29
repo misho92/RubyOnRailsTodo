@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  devise_for :members
+  #devise_for :members
 
   get 'register/signup'
 
@@ -14,6 +14,9 @@ Rails.application.routes.draw do
   resources :todos
   
   root to: "todo#index"
+  
+  # make devise use my own registation controller instead of its custom default (necessary for the additional fields added in signup form)
+  devise_for :members, :controllers => {:registrations => "registration"}
   
   #devise_for :members, :controllers => { registration: "registration" }
 #setting routes - matching verbs to the corresponding controllers and definitions to them  
